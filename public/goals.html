@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals - Budget Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2>Budget Tracker</h2>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="budgets.html">Budgets</a></li>
+                <li><a href="expenses.html">Expenses</a></li>
+                <li><a href="income.html">Income</a></li>
+                <li><a href="goals.html" class="active">Goals</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Financial Goals</h1>
+            <button class="btn btn-primary" id="addGoalBtn">Add Goal</button>
+        </div>
+
+        <div id="goalForm" class="form-card" style="display: none;">
+            <h2 id="goalFormTitle">Add Financial Goal</h2>
+            <form id="goalFormElement">
+                <input type="hidden" id="goalId">
+                <div class="form-group">
+                    <label for="goalName">Goal Name</label>
+                    <input type="text" id="goalName" name="goalName" required>
+                </div>
+                <div class="form-group">
+                    <label for="targetAmount">Target Amount</label>
+                    <input type="number" id="targetAmount" name="targetAmount" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="targetDate">Target Date (Optional)</label>
+                    <input type="date" id="targetDate" name="targetDate">
+                </div>
+                <div class="form-group" id="currentAmountGroup" style="display: none;">
+                    <label for="currentAmount">Current Amount</label>
+                    <input type="number" id="currentAmount" name="currentAmount" step="0.01" min="0">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Goal</button>
+                <button type="button" class="btn btn-secondary" id="cancelGoalBtn">Cancel</button>
+            </form>
+        </div>
+
+        <div id="goalsList" class="goals-list"></div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="goals.js"></script>
+</body>
+</html>
+

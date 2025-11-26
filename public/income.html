@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income - Budget Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2>Budget Tracker</h2>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="budgets.html">Budgets</a></li>
+                <li><a href="expenses.html">Expenses</a></li>
+                <li><a href="income.html" class="active">Income</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Income</h1>
+            <button class="btn btn-primary" id="addIncomeBtn">Add Income</button>
+        </div>
+
+        <div id="incomeForm" class="form-card" style="display: none;">
+            <h2 id="incomeFormTitle">Add Income</h2>
+            <form id="incomeFormElement">
+                <input type="hidden" id="incomeId">
+                <div class="form-group">
+                    <label for="incomeSource">Source</label>
+                    <input type="text" id="incomeSource" name="source" required>
+                </div>
+                <div class="form-group">
+                    <label for="incomeAmount">Amount</label>
+                    <input type="number" id="incomeAmount" name="amount" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="incomeDate">Date</label>
+                    <input type="date" id="incomeDate" name="date" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Income</button>
+                <button type="button" class="btn btn-secondary" id="cancelIncomeBtn">Cancel</button>
+            </form>
+        </div>
+
+        <div class="filter-section">
+            <label for="filterMonthIncome">Filter by Month:</label>
+            <input type="month" id="filterMonthIncome" name="filterMonth">
+            <button class="btn btn-secondary" id="clearFilterIncomeBtn">Clear Filter</button>
+        </div>
+
+        <div id="incomeList" class="income-list"></div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="income.js"></script>
+</body>
+</html>
+

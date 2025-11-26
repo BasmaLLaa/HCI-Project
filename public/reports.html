@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Budget Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2>Budget Tracker</h2>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="budgets.html">Budgets</a></li>
+                <li><a href="expenses.html">Expenses</a></li>
+                <li><a href="income.html">Income</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reports.html" class="active">Reports</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Financial Reports</h1>
+
+        <div class="filter-section">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate">
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate">
+            <button class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+        </div>
+
+        <div class="report-section">
+            <h2>Income vs Expenses</h2>
+            <canvas id="incomeVsExpensesChart"></canvas>
+        </div>
+
+        <div class="report-section">
+            <h2>Budget Variance</h2>
+            <div id="budgetVarianceTable" class="table-container"></div>
+        </div>
+
+        <div class="report-section">
+            <h2>Savings Progress</h2>
+            <div id="savingsProgressTable" class="table-container"></div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="reports.js"></script>
+</body>
+</html>
+

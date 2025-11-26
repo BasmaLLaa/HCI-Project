@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Budget Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2>Budget Tracker</h2>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="budgets.html">Budgets</a></li>
+                <li><a href="expenses.html">Expenses</a></li>
+                <li><a href="income.html">Income</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Dashboard</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Income</h3>
+                <p class="stat-value" id="totalIncome">$0.00</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Expenses</h3>
+                <p class="stat-value" id="totalExpenses">$0.00</p>
+            </div>
+            <div class="stat-card">
+                <h3>Balance</h3>
+                <p class="stat-value" id="balance">$0.00</p>
+            </div>
+            <div class="stat-card">
+                <h3>Active Goals</h3>
+                <p class="stat-value" id="activeGoals">0</p>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Expenses by Category</h3>
+                <canvas id="expensesChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Income vs Expenses</h3>
+                <canvas id="incomeExpensesChart"></canvas>
+            </div>
+        </div>
+
+        <div class="goals-preview">
+            <h3>Recent Goals</h3>
+            <div id="goalsList" class="goals-list"></div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
+
