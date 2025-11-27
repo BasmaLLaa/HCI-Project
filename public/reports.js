@@ -22,9 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('startDate').valueAsDate = startDate;
 
     const generateReportBtn = document.getElementById('generateReportBtn');
-    generateReportBtn.addEventListener('click', () => {
-        loadReports();
-    });
+    if (generateReportBtn) {
+        console.log('Generate Report button found, adding click listener');
+        generateReportBtn.addEventListener('click', () => {
+            console.log('Generate Report button clicked');
+            loadReports();
+        });
+    } else {
+        console.error('Generate Report button not found!');
+    }
 
     // Load reports on page load
     loadReports();
@@ -34,13 +40,17 @@ async function loadReports() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
 
+    console.log('Loading reports with dates:', { startDate, endDate });
+
     if (!startDate || !endDate) {
         alert('Please select both start and end dates');
         return;
     }
 
     try {
+        console.log('Calling reportsAPI.getReports...');
         const reports = await reportsAPI.getReports(startDate, endDate);
+        console.log('Reports received:', reports);
         displayReports(reports);
     } catch (error) {
         console.error('Error loading reports:', error);
@@ -61,44 +71,75 @@ function displayReports(reports) {
 
 function createIncomeVsExpensesChart(data) {
     const ctx = document.getElementById('incomeVsExpensesChart');
-    if (!ctx) return;
+    console.log('createIncomeVsExpensesChart called with data:', data);
+    
+    if (!ctx) {
+        console.error('Canvas element not found');
+        return;
+    }
 
     if (incomeVsExpensesChart) {
         incomeVsExpensesChart.destroy();
     }
 
     if (!data || data.length === 0) {
+        console.log('No data available, showing message');
         ctx.parentElement.innerHTML = '<p>No data available for the selected period</p>';
         return;
     }
 
+    const labels = data.map(d => d.month);
+    const incomeData = data.map(d => Number(d.income) || 0);
+    const expensesData = data.map(d => Number(d.expenses) || 0);
+    
+    console.log('Chart data prepared:', { labels, incomeData, expensesData });
+
     incomeVsExpensesChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: data.map(d => d.month),
+            labels: labels,
             datasets: [
                 {
                     label: 'Income',
-                    data: data.map(d => d.income),
+                    data: incomeData,
                     borderColor: '#28a745',
                     backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    tension: 0.4
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#28a745'
                 },
                 {
                     label: 'Expenses',
-                    data: data.map(d => d.expenses),
+                    data: expensesData,
                     borderColor: '#dc3545',
                     backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                    tension: 0.4
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#dc3545'
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
                 }
             }
         }

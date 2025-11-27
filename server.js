@@ -188,7 +188,7 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
   db.get(
     `SELECT COALESCE(SUM(amount), 0) as total FROM income 
      WHERE user_id = ? AND strftime('%m', date) = ? AND strftime('%Y', date) = ?`,
-    [userId, String(currentMonth).padStart(2, '0'), currentYear],
+    [userId, String(currentMonth).padStart(2, '0'), String(currentYear)],
     (err, incomeResult) => {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -198,7 +198,7 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
       db.get(
         `SELECT COALESCE(SUM(amount), 0) as total FROM expenses 
          WHERE user_id = ? AND strftime('%m', date) = ? AND strftime('%Y', date) = ?`,
-        [userId, String(currentMonth).padStart(2, '0'), currentYear],
+        [userId, String(currentMonth).padStart(2, '0'), String(currentYear)],
         (err, expenseResult) => {
           if (err) {
             return res.status(500).json({ error: 'Database error' });
@@ -209,7 +209,7 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
             `SELECT category, SUM(amount) as total FROM expenses 
              WHERE user_id = ? AND strftime('%m', date) = ? AND strftime('%Y', date) = ?
              GROUP BY category`,
-            [userId, String(currentMonth).padStart(2, '0'), currentYear],
+            [userId, String(currentMonth).padStart(2, '0'), String(currentYear)],
             (err, categoryExpenses) => {
               if (err) {
                 return res.status(500).json({ error: 'Database error' });
@@ -552,32 +552,31 @@ app.put('/api/goals/:id', authenticateToken, (req, res) => {
   const goalId = req.params.id;
   const { currentAmount, goalName, targetAmount, targetDate } = req.body;
 
-  let query = 'UPDATE goals SET ';
+  const updates = [];
   const params = [];
 
   if (currentAmount !== undefined) {
-    query += 'current_amount = ?';
+    updates.push('current_amount = ?');
     params.push(currentAmount);
-  } else if (goalName || targetAmount !== undefined || targetDate !== undefined) {
-    const updates = [];
-    if (goalName) {
-      updates.push('goal_name = ?');
-      params.push(goalName);
-    }
-    if (targetAmount !== undefined) {
-      updates.push('target_amount = ?');
-      params.push(targetAmount);
-    }
-    if (targetDate !== undefined) {
-      updates.push('target_date = ?');
-      params.push(targetDate);
-    }
-    query += updates.join(', ');
-  } else {
+  }
+  if (goalName) {
+    updates.push('goal_name = ?');
+    params.push(goalName);
+  }
+  if (targetAmount !== undefined) {
+    updates.push('target_amount = ?');
+    params.push(targetAmount);
+  }
+  if (targetDate !== undefined) {
+    updates.push('target_date = ?');
+    params.push(targetDate);
+  }
+
+  if (updates.length === 0) {
     return res.status(400).json({ error: 'No fields to update' });
   }
 
-  query += ' WHERE id = ? AND user_id = ?';
+  let query = 'UPDATE goals SET ' + updates.join(', ') + ' WHERE id = ? AND user_id = ?';
   params.push(goalId, userId);
 
   db.run(query, params, function(err) {
@@ -620,6 +619,8 @@ app.get('/api/reports', authenticateToken, (req, res) => {
   const userId = req.user.id;
   const { startDate, endDate } = req.query;
 
+  console.log('Reports API called with:', { userId, startDate, endDate });
+
   if (!startDate || !endDate) {
     return res.status(400).json({ error: 'Start date and end date are required' });
   }
@@ -640,8 +641,11 @@ app.get('/api/reports', authenticateToken, (req, res) => {
     [userId, startDate, endDate, userId, startDate, endDate],
     (err, incomeVsExpenses) => {
       if (err) {
+        console.error('Income vs Expenses query error:', err.message);
         return res.status(500).json({ error: 'Database error' });
       }
+
+      console.log('Income vs Expenses data:', incomeVsExpenses);
 
       // Budget Variance
       db.all(

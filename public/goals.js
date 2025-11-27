@@ -131,20 +131,41 @@ async function editGoal(id) {
 }
 
 async function updateProgress(id) {
-    const newAmount = prompt('Enter new current amount:');
+    const newAmount = prompt('Enter amount to add:');
     if (newAmount === null) return;
 
-    const amount = parseFloat(newAmount);
-    if (isNaN(amount) || amount < 0) {
+    const amountToAdd = parseFloat(newAmount);
+    if (isNaN(amountToAdd) || amountToAdd < 0) {
         alert('Please enter a valid amount');
         return;
     }
 
     try {
-        await goalsAPI.update(id, { currentAmount: amount });
-        alert('Progress updated successfully!');
+        // Get the current goal to fetch existing amount
+        const goals = await goalsAPI.getAll();
+        const goal = goals.find(g => g.id === id);
+        
+        if (!goal) {
+            alert('Goal not found');
+            return;
+        }
+
+        // Add new amount to existing amount
+        const newTotalAmount = goal.current_amount + amountToAdd;
+        console.log('Current amount:', goal.current_amount, 'Adding:', amountToAdd, 'New total:', newTotalAmount);
+
+        const result = await goalsAPI.update(id, { currentAmount: newTotalAmount });
+        console.log('Update result:', result);
+        alert(`Progress updated! Added $${amountToAdd.toFixed(2)} to reach $${newTotalAmount.toFixed(2)}`);
+        // Ensure form is properly closed and state is reset
+        document.getElementById('goalForm').style.display = 'none';
+        document.getElementById('goalFormElement').reset();
+        editingGoalId = null;
+        // Wait a moment then reload to ensure database is updated
+        await new Promise(resolve => setTimeout(resolve, 500));
         loadGoals();
     } catch (error) {
+        console.error('Update error:', error);
         alert('Error updating progress: ' + error.message);
     }
 }
